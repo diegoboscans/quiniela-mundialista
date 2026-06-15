@@ -65,19 +65,21 @@
         </section>
     </main>
 
-  <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4 z-50">
-    <div class="max-w-md mx-auto flex justify-evenly items-center">
+ <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4 z-50">
+    <div class="max-w-md mx-auto flex justify-center gap-16 items-center">
         <button onclick="cambiarVista('app')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
-            <i class="fa-solid fa-gamepad text-xl"></i>
-            <span class="text-[10px] mt-1">Partidos</span>
+            <i class="fa-solid fa-gamepad text-2xl"></i>
+            <span class="text-[10px] mt-1 font-semibold uppercase">Partidos</span>
         </button>
+        
         <button onclick="cambiarVista('ranking')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
-            <i class="fa-solid fa-ranking-star text-xl"></i>
-            <span class="text-[10px] mt-1">Ranking</span>
+            <i class="fa-solid fa-ranking-star text-2xl"></i>
+            <span class="text-[10px] mt-1 font-semibold uppercase">Ranking</span>
         </button>
+        
         <button onclick="cerrarSesion()" class="flex flex-col items-center text-slate-400 hover:text-red-400 transition-colors">
-            <i class="fa-solid fa-right-from-bracket text-xl"></i>
-            <span class="text-[10px] mt-1">Salir</span>
+            <i class="fa-solid fa-right-from-bracket text-2xl"></i>
+            <span class="text-[10px] mt-1 font-semibold uppercase">Salir</span>
         </button>
     </div>
 </nav>
