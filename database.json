@@ -1,0 +1,12 @@
+{
+    "usuarios": {
+        "diegoboscan": {
+            "nombre": "Diego",
+            "apellido": "Boscan",
+            "username": "diegoboscan",
+            "password": "040899",
+            "puntos": 0,
+            "pronosticos": {}
+        }
+    }
+}
