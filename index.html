@@ -9,105 +9,169 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
     <style> #barra-inferior { display: none; } </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
+    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-black text-amber-500">QUINIELA 2026</h1>
-            <div id="caja-usuario" class="bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
-                <span id="texto-usuario" class="text-xs font-medium text-slate-300">Bienvenido</span>
-            </div>
+            <h1 class="text-xl font-black tracking-wider text-amber-500"><i class="fa-solid fa-trophy mr-2"></i>QUINIELA 2026</h1>
         </div>
     </header>
 
-    <main class="max-w-md w-full mx-auto p-4 flex-grow pb-24">
-        <section id="vista-pronosticos" class="space-y-4">
-            <div id="contenedor-partidos" class="space-y-4">
-                <p class="text-center text-slate-400 py-10">Cargando partidos...</p>
+    <main class="max-w-md w-full mx-auto p-4 flex-grow space-y-6 pb-24">
+        <section id="vista-login" class="space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700">
+            <h2 class="text-2xl font-black text-amber-500 text-center">¡Bienvenido!</h2>
+            <form onsubmit="procesarLogin(event);" class="space-y-4">
+                <input type="text" id="login-username" required placeholder="Usuario" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <input type="password" id="login-password" required placeholder="Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <button type="submit" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Ingresar</button>
+            </form>
+            <div class="flex flex-col text-center space-y-2 text-xs">
+                <button onclick="cambiarVista('registro')" class="text-amber-500 underline">¿No tienes cuenta?</button>
+                <button onclick="cambiarVista('recuperar')" class="text-slate-400 underline">¿Olvidaste tu contraseña?</button>
             </div>
-            <button id="btn-finalizar-jornada" onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 text-slate-900 font-black py-3 rounded-xl">Guardar Quiniela</button>
         </section>
 
-        <section id="vista-ranking" class="hidden">
-            <table class="w-full text-left">
-                <tbody id="tabla-ranking-cuerpo"></tbody>
-            </table>
+        <section id="vista-registro" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700">
+            <h2 class="text-2xl font-black text-amber-500 text-center">Crear Cuenta</h2>
+            <form onsubmit="procesarRegistro(event);" class="space-y-4">
+                <input type="text" id="reg-nombre" placeholder="Nombre" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <input type="text" id="reg-username" placeholder="Usuario" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <input type="password" id="reg-password" placeholder="Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <button type="submit" class="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl">Registrarse</button>
+            </form>
+            <button onclick="cambiarVista('login')" class="w-full text-xs text-amber-500 underline">Volver</button>
+        </section>
+
+        <section id="vista-recuperar" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700">
+            <h2 class="text-2xl font-black text-amber-500 text-center">Recuperar Clave</h2>
+            <form onsubmit="procesarRecuperacionLocal(event);" class="space-y-4">
+                <input type="text" id="rec-username" required placeholder="Usuario" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <input type="password" id="rec-password" required placeholder="Nueva Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
+                <button type="submit" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Actualizar</button>
+            </form>
+            <button onclick="cambiarVista('login')" class="w-full text-xs text-slate-400 underline">Volver al Login</button>
+        </section>
+
+        <section id="vista-pronosticos" class="hidden space-y-4">
+            <h2 class="font-bold text-lg text-amber-500">Partidos</h2>
+            <div id="contenedor-partidos" class="space-y-3"></div>
+            <button onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Guardar Quiniela</button>
+        </section>
+
+        <section id="vista-ranking" class="hidden space-y-4">
+            <h2 class="font-bold text-lg text-amber-500">Ranking</h2>
+            <div id="tabla-ranking-cuerpo" class="bg-slate-800 rounded-xl p-4 divide-y divide-slate-700"></div>
+            <button onclick="cambiarVista('app')" class="w-full bg-slate-700 py-2 rounded-xl">Volver</button>
         </section>
     </main>
 
-    <script>
-        const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
-        let usuarioLogueado = JSON.parse(localStorage.getItem('quiniela_sesion_server')) || { username: 'invitado', nombre: 'Invitado' };
-        let pronosticosTemporales = {};
+    <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4">
+        <div class="max-w-md mx-auto flex justify-around">
+            <button onclick="cambiarVista('app')" class="text-slate-400"><i class="fa-solid fa-gamepad"></i></button>
+            <button onclick="cambiarVista('ranking')" class="text-slate-400"><i class="fa-solid fa-ranking-star"></i></button>
+            <button onclick="cerrarSesion()" class="text-red-400"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </nav>
 
-        // Carga inicial
-        window.onload = async () => {
-            await cargarPartidos();
-        };
+   <script>
+    const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
+    let usuarioLogueado = JSON.parse(localStorage.getItem('quiniela_sesion_server')) || null;
+    let pronosticosTemporales = {};
 
-        async function cargarPartidos() {
-            try {
-                const res = await fetch(`${API_BASE_URL}/partidos`);
-                const partidos = await res.json();
-                renderizarTarjetasPartidos(partidos);
-            } catch (err) {
-                document.getElementById('contenedor-partidos').innerHTML = '<p class="text-center text-red-400">Error al conectar con el servidor.</p>';
-            }
-        }
-
-        function renderizarTarjetasPartidos(partidos) {
-            const contenedor = document.getElementById('contenedor-partidos');
-            contenedor.innerHTML = '';
-            partidos.forEach(partido => {
-                const pId = partido.id;
-                const apuesta = pronosticosTemporales[pId] || { home: '', away: '' };
-                const terminado = partido.status === 'FINISHED';
-                const div = document.createElement('div');
-                div.className = "bg-slate-800 border border-slate-700 p-4 rounded-xl";
-                div.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold w-20 truncate">${partido.homeTeam?.name || 'Local'}</span>
-                        <div class="flex gap-2">
-                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuesta.home}" oninput="pronosticosTemporales[${pId}]={...pronosticosTemporales[${pId}] || {home:'', away:''}, home:this.value}" class="w-10 bg-slate-900 text-center rounded text-amber-500">
-                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuesta.away}" oninput="pronosticosTemporales[${pId}]={...pronosticosTemporales[${pId}] || {home:'', away:''}, away:this.value}" class="w-10 bg-slate-900 text-center rounded text-amber-500">
-                        </div>
-                        <span class="text-xs font-bold w-20 truncate text-right">${partido.awayTeam?.name || 'Visita'}</span>
-                    </div>`;
-                contenedor.appendChild(div);
-            });
-        }
-
-        async function finalizarYGuardarJornadaServer() {
-            const btn = document.getElementById('btn-finalizar-jornada');
-            btn.innerText = "Guardando...";
-            try {
-                const res = await fetch(`${API_BASE_URL}/guardar_quiniela`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ username: usuarioLogueado.username, pronosticos: pronosticosTemporales })
-                });
-                alert("¡Quiniela guardada!");
-            } catch(e) { alert("Error al guardar"); }
-            btn.innerText = "Guardar Quiniela";
-        }
-
-        function cambiarVista(vista) {
-            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+    function cambiarVista(vista) {
+        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+        const bar = document.getElementById('barra-inferior');
+        if(vista === 'app') {
+            document.getElementById('vista-pronosticos').classList.remove('hidden');
+            bar.style.display = 'flex';
+            cargarPartidosReales();
+        } else if(vista === 'ranking') {
+            document.getElementById('vista-ranking').classList.remove('hidden');
+            bar.style.display = 'flex';
+            renderizarRanking();
+        } else {
             document.getElementById('vista-' + vista).classList.remove('hidden');
-            if(vista === 'ranking') renderizarRanking();
+            bar.style.display = 'none';
         }
+    }
 
-        async function renderizarRanking() {
-            const tbody = document.getElementById('tabla-ranking-cuerpo');
-            const res = await fetch(`${API_BASE_URL}/ranking`);
-            const data = await res.json();
-            tbody.innerHTML = data.sort((a,b) => b.puntos - a.puntos).map((u, i) => `
-                <tr class="border-b border-slate-700">
-                    <td class="py-3 px-4">${i+1}º</td>
-                    <td class="py-3 px-2">${u.nombre || 'Usuario'}</td>
-                    <td class="py-3 px-4 text-center font-black text-amber-500">${u.puntos} pts</td>
-                </tr>`).join('');
-        }
-    </script>
+    function registrarCambioTemporal(pId, lado, val) {
+        if(!pronosticosTemporales[pId]) pronosticosTemporales[pId] = {home:'', away:''};
+        pronosticosTemporales[pId][lado] = val;
+    }
+
+    async function cargarPartidosReales() {
+        const cont = document.getElementById('contenedor-partidos');
+        try {
+            const res = await fetch(`${API_BASE_URL}/partidos`);
+            const partidos = await res.json();
+            renderizarTarjetasPartidos(partidos);
+        } catch(e) { cont.innerHTML = "Error al cargar partidos."; }
+    }
+
+    function renderizarTarjetasPartidos(partidos) {
+        const cont = document.getElementById('contenedor-partidos');
+        cont.innerHTML = partidos.map(p => {
+            const esFinalizado = p.status === 'FINISHED';
+            const resReal = p.score_real || {home: null, away: null};
+            const apuesta = pronosticosTemporales[p.id] || {home: '', away: ''};
+            
+            return `
+                <div class="bg-slate-800 p-4 rounded-xl border ${esFinalizado ? 'border-emerald-500/50' : 'border-slate-700'} flex justify-between items-center">
+                    <span class="w-20 truncate text-xs"><span class="fi fi-${p.homeTeam.flag}"></span> ${p.homeTeam.name}</span>
+                    <div class="flex gap-2 items-center">
+                        <input type="number" ${esFinalizado ? 'disabled' : ''} 
+                            class="w-10 bg-slate-900 text-center rounded ${esFinalizado ? 'text-emerald-400' : ''}" 
+                            value="${esFinalizado ? (resReal.home ?? '-') : apuesta.home}" 
+                            oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
+                        <span class="text-slate-600 font-bold">X</span>
+                        <input type="number" ${esFinalizado ? 'disabled' : ''} 
+                            class="w-10 bg-slate-900 text-center rounded ${esFinalizado ? 'text-emerald-400' : ''}" 
+                            value="${esFinalizado ? (resReal.away ?? '-') : apuesta.away}" 
+                            oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
+                    </div>
+                    <span class="w-20 truncate text-xs text-right">${p.awayTeam.name} <span class="fi fi-${p.awayTeam.flag}"></span></span>
+                </div>`;
+        }).join('');
+    }
+
+    async function finalizarYGuardarJornadaServer() {
+        if(!usuarioLogueado) return;
+        const res = await fetch(`${API_BASE_URL}/guardar_quiniela`, {
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({username: usuarioLogueado.username, pronosticos: pronosticosTemporales})
+        });
+        if((await res.json()).success) alert("Guardado correctamente");
+    }
+
+    async function procesarLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById('login-username').value.toLowerCase();
+        const p = document.getElementById('login-password').value;
+        const res = await fetch(`${API_BASE_URL}/login`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u, password:p})});
+        const data = await res.json();
+        if(data.success) {
+            usuarioLogueado = data.user;
+            pronosticosTemporales = data.user.pronosticos || {};
+            localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado));
+            cambiarVista('app');
+        } else alert("Error de credenciales");
+    }
+
+    async function renderizarRanking() {
+        const res = await fetch(`${API_BASE_URL}/ranking`);
+        const data = await res.json();
+        document.getElementById('tabla-ranking-cuerpo').innerHTML = data.map(u => 
+            `<div class="py-2 flex justify-between border-b border-slate-700"><span>${u.username}</span><b>${u.puntos} pts</b></div>`).join('');
+    }
+
+    function cerrarSesion() {
+        localStorage.clear();
+        location.reload();
+    }
+
+    window.onload = () => usuarioLogueado ? cambiarVista('app') : cambiarVista('login');
+</script>
 </body>
 </html>

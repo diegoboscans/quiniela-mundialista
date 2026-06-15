@@ -14,6 +14,13 @@ BACKUP_FILE = 'database_backup.json'
 CACHE_FILE = 'matches_cache.json'
 API_TOKEN = 'f5ba1c141b2f495aa7eb896d7d2b4254'
 
+MAPA_PAISES = {
+    "Argentina": "ar", "Brazil": "br", "Germany": "de", "France": "fr", 
+    "Spain": "es", "Mexico": "mx", "England": "gb", "Portugal": "pt",
+    "Italy": "it", "Netherlands": "nl", "Belgium": "be", "Uruguay": "uy",
+    "United States": "us", "Canada": "ca"
+}
+
 def cargar_db():
     if not os.path.exists(DB_FILE):
         if os.path.exists(BACKUP_FILE):
@@ -49,7 +56,14 @@ def obtener_partidos_api():
 
 @app.route('/api/partidos', methods=['GET'])
 def endpoint_partidos():
-    return jsonify(obtener_partidos_api())
+    partidos = obtener_partidos_api()
+    for p in partidos:
+        # Inyectamos el flag code
+        p["homeTeam"]["flag"] = MAPA_PAISES.get(p["homeTeam"]["name"], "un")
+        p["awayTeam"]["flag"] = MAPA_PAISES.get(p["awayTeam"]["name"], "un")
+        # Incluimos los resultados reales si existen
+        p["score_real"] = p.get("score", {}).get("fullTime", {"home": None, "away": None})
+    return jsonify(partidos)
 
 def recalcular_ranking_global():
     db = cargar_db()
@@ -66,7 +80,9 @@ def recalcular_ranking_global():
                     if str(pred.get("home", "")).isdigit() and str(pred.get("away", "")).isdigit():
                         ph, pa = int(pred["home"]), int(pred["away"])
                         if ph == real["home"] and pa == real["away"]: puntos += 3
-                        elif (real["home"] > real["away"] and ph > pa) or (real["away"] > real["home"] and pa > ph) or (real["home"] == real["away"] and ph == pa): puntos += 1
+                        elif (real["home"] > real["away"] and ph > pa) or \
+                             (real["away"] > real["home"] and pa > ph) or \
+                             (real["home"] == real["away"] and ph == pa): puntos += 1
         usuario["puntos"] = puntos
     guardar_db(db)
 
@@ -75,7 +91,7 @@ def registrar_usuario():
     datos = request.json
     db = cargar_db()
     username = datos.get('username', '').strip().lower()
-    if username in db['usuarios']: return jsonify({"success": False}), 400
+    if username in db['usuarios']: return jsonify({"success": False, "message": "Usuario existe"}), 400
     db['usuarios'][username] = {"nombre": datos.get('nombre'), "apellido": datos.get('apellido'), "username": username, "password": datos.get('password'), "puntos": 0, "pronosticos": {}}
     guardar_db(db)
     return jsonify({"success": True})
@@ -94,6 +110,7 @@ def guardar_quiniela():
     db = cargar_db()
     username = datos.get('username', '').strip().lower()
     if username in db['usuarios']:
+        # Solo guardar si el partido NO ha terminado
         db['usuarios'][username]['pronosticos'].update(datos.get('pronosticos', {}))
         guardar_db(db)
         recalcular_ranking_global()
@@ -104,7 +121,8 @@ def guardar_quiniela():
 def obtener_ranking():
     recalcular_ranking_global()
     db = cargar_db()
-    return jsonify(list(db['usuarios'].values()))
+    ranking = sorted(db['usuarios'].values(), key=lambda x: x['puntos'], reverse=True)
+    return jsonify(ranking)
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
