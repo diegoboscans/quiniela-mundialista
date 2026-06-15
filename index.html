@@ -65,13 +65,22 @@
         </section>
     </main>
 
-    <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4">
-        <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="cambiarVista('app')" class="text-slate-400"><i class="fa-solid fa-gamepad"></i></button>
-            <button onclick="cambiarVista('ranking')" class="text-slate-400"><i class="fa-solid fa-ranking-star"></i></button>
-            <button onclick="cerrarSesion()" class="text-red-400"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-    </nav>
+  <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4 z-50">
+    <div class="max-w-md mx-auto flex justify-evenly items-center">
+        <button onclick="cambiarVista('app')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
+            <i class="fa-solid fa-gamepad text-xl"></i>
+            <span class="text-[10px] mt-1">Partidos</span>
+        </button>
+        <button onclick="cambiarVista('ranking')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
+            <i class="fa-solid fa-ranking-star text-xl"></i>
+            <span class="text-[10px] mt-1">Ranking</span>
+        </button>
+        <button onclick="cerrarSesion()" class="flex flex-col items-center text-slate-400 hover:text-red-400 transition-colors">
+            <i class="fa-solid fa-right-from-bracket text-xl"></i>
+            <span class="text-[10px] mt-1">Salir</span>
+        </button>
+    </div>
+</nav>
 
    <script>
     const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
