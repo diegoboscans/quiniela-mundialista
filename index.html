@@ -6,477 +6,77 @@
     <title>Quiniela Mundialista</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
-    <style>
-        #barra-inferior { display: none; }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
+    <style> #barra-inferior { display: none; } </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
+    <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-black tracking-wider text-amber-500">
-                <i class="fa-solid font-bold fa-trophy mr-2"></i>QUINIELA 2026
-            </h1>
-            <div id="caja-usuario" class="flex items-center space-x-2 bg-slate-900 px-3 py-1 rounded-full border border-slate-700 invisible">
-                <i class="fa-solid fa-user text-xs text-amber-500"></i>
-                <span id="texto-usuario" class="text-xs font-medium max-w-[100px] truncate text-slate-300">Invitado</span>
+            <h1 class="text-xl font-black text-amber-500">QUINIELA 2026</h1>
+            <div id="caja-usuario" class="bg-slate-900 px-3 py-1 rounded-full border border-slate-700 invisible">
+                <span id="texto-usuario" class="text-xs font-medium text-slate-300"></span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-md w-full mx-auto p-4 flex-grow space-y-6 pb-24">
-
-        <div id="notificacion" class="fixed top-20 left-1/2 -translate-x-1/2 bg-emerald-500 text-slate-950 font-bold text-xs py-2 px-4 rounded-xl shadow-lg transition-all duration-300 transform scale-0 opacity-0 z-50 flex items-center gap-2">
-            <i class="fa-solid fa-circle-check"></i> <span id="notificacion-texto">Guardado exitosamente</span>
-        </div>
-
-        <section id="vista-login" class="space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <div class="text-center space-y-1">
-                <h2 class="text-2xl font-black tracking-wide text-amber-500">¡Bienvenido!</h2>
-                <p class="text-xs text-slate-400">Ingresa para armar tus pronósticos</p>
-            </div>
-
-            <form id="form-login" class="space-y-4" onsubmit="procesarLogin(event);">
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre de Usuario</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-user absolute left-3 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="text" id="login-username" required placeholder="ej: diegoboscan" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:border-amber-500 text-slate-200">
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contraseña</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-lock absolute left-3 top-3.5 text-slate-500 text-sm"></i>
-                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:border-amber-500 text-slate-200">
-                    </div>
-                </div>
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl transition-all shadow-lg text-sm cursor-pointer">
-                    Ingresar a la Quiniela
-                </button>
-            </form>
-            <div class="flex flex-col space-y-2 text-center text-xs pt-2">
-                <button onclick="cambiarVista('registro')" class="text-amber-500 hover:underline font-semibold cursor-pointer">¿No tienes cuenta? Regístrate aquí</button>
-                <button onclick="cambiarVista('recuperar')" class="text-slate-400 hover:text-slate-300 hover:underline cursor-pointer">¿Olvidaste tu contraseña?</button>
-            </div>
-        </section>
-
-        <section id="vista-registro" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <div class="text-center space-y-1">
-                <h2 class="text-2xl font-black tracking-wide text-amber-500">Crear Cuenta</h2>
-                <p class="text-xs text-slate-400">Regístrate para empezar a sumar puntos</p>
-            </div>
-
-            <form id="form-registro" class="space-y-4" onsubmit="procesarRegistro(event);">
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre</label>
-                        <input type="text" id="reg-nombre" required placeholder="Diego" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Apellido</label>
-                        <input type="text" id="reg-apellido" required placeholder="Boscan" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre de Usuario</label>
-                    <input type="text" id="reg-username" required placeholder="Crea un apodo único" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contraseña</label>
-                    <input type="password" id="reg-password" required placeholder="Mínimo 4 caracteres" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                </div>
-                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all shadow-lg text-sm cursor-pointer">
-                    Finalizar Registro
-                </button>
-            </form>
-            <div class="text-center text-xs pt-2">
-                <button onclick="cambiarVista('login')" class="text-amber-500 hover:underline font-semibold cursor-pointer">¿Ya tienes cuenta? Inicia sesión</button>
-            </div>
-        </section>
-
-        <section id="vista-recuperar" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-            <div class="text-center space-y-1">
-                <h2 class="text-2xl font-black tracking-wide text-amber-500">Recuperar Clave</h2>
-                <p class="text-xs text-slate-400">Modifica tu contraseña directo en el sistema local</p>
-            </div>
-            <form id="form-recuperar" class="space-y-4" onsubmit="procesarRecuperacionLocal(event);">
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nombre de Usuario</label>
-                    <input type="text" id="rec-username" required placeholder="ej: diegoboscan" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nueva Contraseña</label>
-                    <input type="password" id="rec-password" required placeholder="Mínimo 4 caracteres" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2.5 px-3 text-sm focus:outline-none focus:border-amber-500 text-slate-200">
-                </div>
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-xl text-sm cursor-pointer">
-                    Actualizar Contraseña
-                </button>
-            </form>
-            <div class="text-center text-xs pt-2">
-                <button onclick="cambiarVista('login')" class="text-slate-400 hover:underline cursor-pointer">Volver al Login</button>
-            </div>
-        </section>
-        
+    <main class="max-w-md w-full mx-auto p-4 flex-grow pb-24">
         <section id="vista-pronosticos" class="hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-calendar-day text-amber-500"></i> Partidos de la Fecha
-                </h2>
-                <span id="nombre-competicion" class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400">Cargando Torneo...</span>
-            </div>
-            
             <div id="contenedor-partidos" class="space-y-4"></div>
-
-            <div class="pt-4">
-                <button id="btn-finalizar-jornada" onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-900 font-black py-3 rounded-xl transition-all shadow-lg text-sm flex items-center justify-center gap-2 cursor-pointer border border-amber-400/20">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Finalizar y Guardar Quiniela
-                </button>
-            </div>
+            <button id="btn-finalizar-jornada" onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 text-slate-900 font-black py-3 rounded-xl">Guardar Quiniela</button>
         </section>
 
-        <section id="vista-ranking" class="hidden space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-ranking-star text-amber-500"></i> Tabla de Posiciones Global
-                </h2>
-                <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-400">En tiempo real</span>
-            </div>
-            <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700/50 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-900/60 text-slate-400 text-[11px] font-semibold uppercase tracking-wider border-b border-slate-700">
-                            <th class="py-3 px-4 text-center w-12">Pos</th>
-                            <th class="py-3 px-2">Participante</th>
-                            <th class="py-3 px-4 text-center w-20">Puntos</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-ranking-cuerpo" class="divide-y divide-slate-700/40 text-sm font-medium"></tbody>
-                </table>
-            </div>
+        <section id="vista-ranking" class="hidden">
+            <table class="w-full text-left">
+                <tbody id="tabla-ranking-cuerpo"></tbody>
+            </table>
         </section>
-
     </main>
-
-    <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-2 shadow-lg z-50 flex justify-around">
-        <div class="max-w-md w-full mx-auto flex justify-around">
-            <button id="btn-nav-partidos" onclick="cambiarVista('app')" class="flex flex-col items-center space-y-1 text-slate-400 font-medium text-xs cursor-pointer">
-                <i class="fa-solid fa-gamepad text-lg"></i>
-                <span>Partidos</span>
-            </button>
-            <button id="btn-nav-ranking" onclick="cambiarVista('ranking')" class="flex flex-col items-center space-y-1 text-slate-400 font-medium text-xs cursor-pointer">
-                <i class="fa-solid fa-ranking-star text-lg"></i>
-                <span>Ranking</span>
-            </button>
-            <button onclick="cerrarSesion()" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-red-400 font-medium text-xs cursor-pointer">
-                <i class="fa-solid fa-right-from-bracket text-lg"></i>
-                <span>Salir</span>
-            </button>
-        </div>
-    </nav>
-
-    <footer class="bg-slate-950 text-center py-3 text-[11px] text-slate-500 border-t border-slate-900/60 mb-16">
-        <p>Desarrollado y Programado by Diego Boscan Sideregts &copy; 2026</p>
-    </footer>
 
     <script>
         const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
-        const API_TOKEN = 'f5ba1c141b2f495aa7eb896d7d2b4254';
-
         let usuarioLogueado = JSON.parse(localStorage.getItem('quiniela_sesion_server')) || null;
         let pronosticosTemporales = {};
 
-        const partidosRespaldo = [
-            { id: 101, homeTeam: { name: 'Argentina' }, awayTeam: { name: 'France' }, status: 'FINISHED', score: { fullTime: { home: 2, away: 1 } }, utcDate: '2026-07-15T20:00:00Z' },
-            { id: 102, homeTeam: { name: 'Brazil' }, awayTeam: { name: 'Germany' }, status: 'FINISHED', score: { fullTime: { home: 1, away: 1 } }, utcDate: '2026-07-16T18:00:00Z' },
-            { id: 103, homeTeam: { name: 'Spain' }, awayTeam: { name: 'Italy' }, status: 'SCHEDULED', score: { fullTime: { home: null, away: null } }, utcDate: '2026-07-17T15:00:00Z' },
-            { id: 104, homeTeam: { name: 'Netherlands' }, awayTeam: { name: 'England' }, status: 'SCHEDULED', score: { fullTime: { home: null, away: null } }, utcDate: '2026-07-18T21:00:00Z' }
-        ];
-
-        const diccionarioBanderas = {
-            'Argentina': 'ar', 'France': 'fr', 'Brazil': 'br', 'Germany': 'de', 'Spain': 'es',
-            'Italy': 'it', 'England': 'gb', 'Portugal': 'pt', 'Netherlands': 'nl', 'Uruguay': 'uy',
-            'Mexico': 'mx', 'Canada': 'ca', 'Colombia': 'co', 'Venezuela': 've', 'Ecuador': 'ec'
-        };
-
-        function registrarCambioTemporal(partidoId, lado, valor) {
-            if (!pronosticosTemporales[partidoId]) {
-                pronosticosTemporales[partidoId] = { home: '', away: '' };
-            }
-            pronosticosTemporales[partidoId][lado] = valor;
-        }
-
-        async function procesarLogin(e) {
-            e.preventDefault();
-            const username = document.getElementById('login-username').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
-
-            try {
-                const respuesta = await fetch(`${API_BASE_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const datos = await respuesta.json();
-
-                if (datos.success) {
-                    usuarioLogueado = datos.user;
-                    localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado));
-                    pronosticosTemporales = JSON.parse(JSON.stringify(usuarioLogueado.pronosticos || {}));
-                    cambiarVista('app');
-                } else {
-                    alert(datos.message || 'Error al iniciar sesión.');
-                }
-            } catch (err) {
-                alert('No se pudo conectar con Python. Inicia el backend ejecutando "python app.py" en tu terminal.');
-            }
-        }
-
-        async function procesarRegistro(e) {
-            e.preventDefault();
-            const nombre = document.getElementById('reg-nombre').value.trim();
-            const apellido = document.getElementById('reg-apellido').value.trim();
-            const username = document.getElementById('reg-username').value.trim().toLowerCase();
-            const password = document.getElementById('reg-password').value;
-
-            try {
-                const respuesta = await fetch(`${API_BASE_URL}/registro`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, apellido, username, password })
-                });
-                const datos = await respuesta.json();
-
-                if (datos.success) {
-                    alert('¡Registro exitoso en el servidor central!');
-                    cambiarVista('login');
-                } else {
-                    alert(datos.message || 'Error en el registro.');
-                }
-            } catch (err) {
-                alert('Error al conectar con el servidor backend.');
-            }
-        }
-
-      async function procesarRecuperacionLocal(e) {
-    e.preventDefault();
-    const username = document.getElementById('rec-username').value.trim().toLowerCase();
-    const password = document.getElementById('rec-password').value;
-
-    try {
-        const respuesta = await fetch(`${API_BASE_URL}/recuperar`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-        });
-        const datos = await respuesta.json();
-
-        if (datos.success) {
-            alert('¡Contraseña cambiada con éxito! Ya puedes iniciar sesión con tu nueva clave.');
-            cambiarVista('login');
-            // Limpiar el formulario
-            document.getElementById('form-recuperar').reset();
-        } else {
-            alert(datos.message || 'Error al restaurar la contraseña.');
-        }
-    } catch (err) {
-        alert('Error de red. Asegúrate de que el servidor Python esté encendido.');
-    }
-}
-
-        async function finalizarYGuardarJornadaServer() {
-            if (!usuarioLogueado) return;
-            const btn = document.getElementById('btn-finalizar-jornada');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Subiendo respuestas...';
-
-            try {
-                const respuesta = await fetch(`${API_BASE_URL}/guardar_quiniela`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: usuarioLogueado.username,
-                        pronosticos: pronosticosTemporales
-                    })
-                });
-                const datos = await respuesta.json();
-
-                if (datos.success) {
-                    usuarioLogueado = datos.user;
-                    localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado));
-                    mostrarNotificacion("¡Guardado en Servidor! Marcadores evaluados.");
-                } else {
-                    alert('Hubo un problema al guardar en la base de datos.');
-                }
-            } catch (err) {
-                alert('Error de red al intentar guardar en el servidor.');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Finalizar y Guardar Quiniela';
-            }
-        }
-
-        async function renderizarRanking() {
-            const tablaCuerpo = document.getElementById('tabla-ranking-cuerpo');
-            tablaCuerpo.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-xs text-slate-400">Obteniendo ranking unificado...</td></tr>';
-
-            try {
-                const respuesta = await fetch(`${API_BASE_URL}/ranking`);
-                const listaUsuarios = await respuesta.json();
-                
-                tablaCuerpo.innerHTML = '';
-                const usuariosOrdenados = [...listaUsuarios].sort((a, b) => b.puntos - a.puntos);
-
-                usuariosOrdenados.forEach((user, index) => {
-                    const esPropioUsuario = usuarioLogueado && user.username === usuarioLogueado.username;
-                    let num = index + 1;
-                    if (index === 0) num = '<i class="fa-solid fa-crown text-amber-500"></i>';
-
-                    const fila = document.createElement('tr');
-                    fila.className = `border-b border-slate-700/30 ${esPropioUsuario ? 'bg-amber-500/5 font-bold text-amber-400' : 'text-slate-300'}`;
-                    fila.innerHTML = `
-                        <td class="py-3.5 px-4 text-center text-xs">${num}</td>
-                        <td class="py-3.5 px-2">
-                            ${user.nombre} ${user.apellido}
-                            ${esPropioUsuario ? '<span class="bg-amber-500 text-slate-900 text-[9px] font-black uppercase px-1.5 py-0.5 rounded ml-2">Tú</span>' : ''}
-                        </td>
-                        <td class="py-3.5 px-4 text-center text-sm font-black text-slate-100">${user.puntos} pts</td>
-                    `;
-                    tablaCuerpo.appendChild(fila);
-                });
-            } catch (err) {
-                tablaCuerpo.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-xs text-red-400">Error al leer la base de datos central.</td></tr>';
-            }
-        }
-
-        function cambiarVista(vista) {
-            const login = document.getElementById('vista-login');
-            const registro = document.getElementById('vista-registro');
-            const recuperar = document.getElementById('vista-recuperar');
-            const partidos = document.getElementById('vista-pronosticos');
-            const ranking = document.getElementById('vista-ranking');
-            const navegacion = document.getElementById('barra-inferior');
-            
-            const btnPartidos = document.getElementById('btn-nav-partidos');
-            const btnRanking = document.getElementById('btn-nav-ranking');
-
-            login.classList.add('hidden'); registro.classList.add('hidden'); recuperar.classList.add('hidden'); partidos.classList.add('hidden'); ranking.classList.add('hidden');
-            btnPartidos.className = "flex flex-col items-center space-y-1 text-slate-400 font-medium text-xs cursor-pointer";
-            btnRanking.className = "flex flex-col items-center space-y-1 text-slate-400 font-medium text-xs cursor-pointer";
-
-            if (vista === 'login' || vista === 'registro' || vista === 'recuperar') {
-                navegacion.style.display = 'none';
-                if (vista === 'login') login.classList.remove('hidden');
-                if (vista === 'registro') registro.classList.remove('hidden');
-                if (vista === 'recuperar') recuperar.classList.remove('hidden');
-            } else {
-                navegacion.style.display = 'flex';
-                actualizarInterfazUsuario();
-                if (vista === 'app') {
-                    partidos.classList.remove('hidden');
-                    btnPartidos.className = "flex flex-col items-center space-y-1 text-amber-500 font-bold text-xs cursor-pointer";
-                    cargarPartidosReales();
-                } else if (vista === 'ranking') {
-                    ranking.classList.remove('hidden');
-                    btnRanking.className = "flex flex-col items-center space-y-1 text-amber-500 font-bold text-xs cursor-pointer";
-                    renderizarRanking();
-                }
-            }
-        }
-
-        function actualizarInterfazUsuario() {
-            const cajaUsuario = document.getElementById('caja-usuario');
-            const textoUsuario = document.getElementById('texto-usuario');
-            if (usuarioLogueado) {
-                textoUsuario.textContent = usuarioLogueado.username;
-                cajaUsuario.classList.remove('invisible');
-            }
-        }
-
-        function cerrarSesion() {
-            usuarioLogueado = null; pronosticosTemporales = {}; localStorage.removeItem('quiniela_sesion_server'); cambiarVista('login');
-        }
-
-        async function cargarPartidosReales() {
-            const contenedor = document.getElementById('contenedor-partidos');
-            const compLabel = document.getElementById('nombre-competicion');
-            contenedor.innerHTML = '<div class="text-center text-xs py-10 text-slate-400"><i class="fa-solid fa-spinner animate-spin mr-2"></i>Sincronizando partidos con el servidor...</div>';
-
-            try {
-                const respuesta = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.football-data.org/v4/competitions/WC/matches'), {
-                    method: 'GET',
-                    headers: { 'X-Auth-Token': API_TOKEN }
-                });
-                if (!respuesta.ok) throw new Error('Error');
-                const datos = await respuesta.json();
-
-                if (!datos.matches || datos.matches.length === 0) { utilizarRespaldo(compLabel); } 
-                else {
-                    compLabel.textContent = datos.competition.name;
-                    contenedor.innerHTML = '';
-                    renderizarTarjetasPartidos(datos.matches);
-                }
-            } catch (error) { utilizarRespaldo(compLabel); }
-        }
-
-        function utilizarRespaldo(compLabel) {
-            compLabel.textContent = "Mundial 2026 (Simulación de Resultados)";
-            document.getElementById('contenedor-partidos').innerHTML = '';
-            renderizarTarjetasPartidos(partidosRespaldo);
-        }
-
-        function obtenerHtmlBandera(nombrePais) {
-            const codigo = diccionarioBanderas[nombrePais];
-            return codigo ? `<span class="fi fi-${codigo} text-2xl rounded-sm"></span>` : `<div class="w-8 h-6 bg-slate-700 rounded flex items-center justify-center"><i class="fa-solid fa-shield-halved text-xs text-amber-500"></i></div>`;
-        }
-
         function renderizarTarjetasPartidos(partidos) {
             const contenedor = document.getElementById('contenedor-partidos');
-            contenedor.innerHTML = ''; // Limpiar duplicados
+            contenedor.innerHTML = '';
             partidos.forEach(partido => {
-                const nameHome = partido.homeTeam ? partido.homeTeam.name : 'Por definir';
-                const nameAway = partido.awayTeam ? partido.awayTeam.name : 'Por definir';
-                
-                const apuestaExistente = pronosticosTemporales[partido.id] || (usuarioLogueado && usuarioLogueado.pronosticos && usuarioLogueado.pronosticos[partido.id]) || { home: '', away: '' };
+                const pId = partido.id;
+                const apuesta = pronosticosTemporales[pId] || { home: '', away: '' };
                 const terminado = partido.status === 'FINISHED';
-                const marcadorRealHtml = terminado ? `<span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded font-bold">Final: ${partido.score.fullTime.home} - ${partido.score.fullTime.away}</span>` : `<span class="text-[10px] bg-slate-700 text-slate-400 px-2 py-0.5 rounded">Pendiente</span>`;
-
-                const tarjeta = document.createElement('div');
-                tarjeta.className = `bg-slate-800 border ${terminado ? 'border-emerald-500/20 bg-slate-800/80' : 'border-slate-700/60'} rounded-xl p-4 shadow-md space-y-3`;
-                tarjeta.innerHTML = `
-                    <div class="flex justify-between items-center text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-                        <span>${new Date(partido.utcDate).toLocaleDateString([], {day: 'numeric', month: 'short'})}</span>
-                        ${marcadorRealHtml}
-                    </div>
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex flex-col items-center flex-1 space-y-1.5">
-                            ${obtenerHtmlBandera(nameHome)}
-                            <span class="text-xs font-bold text-slate-300 truncate w-24 text-center">${nameHome}</span>
+                const div = document.createElement('div');
+                div.className = "bg-slate-800 border border-slate-700 p-4 rounded-xl";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold w-20 truncate">${partido.homeTeam.name}</span>
+                        <div class="flex gap-2">
+                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuesta.home}" oninput="pronosticosTemporales[${pId}]={...pronosticosTemporales[${pId}], home:this.value}" class="w-10 bg-slate-900 text-center rounded text-amber-500">
+                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuesta.away}" oninput="pronosticosTemporales[${pId}]={...pronosticosTemporales[${pId}], away:this.value}" class="w-10 bg-slate-900 text-center rounded text-amber-500">
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuestaExistente.home || ''}" oninput="registrarCambioTemporal(${partido.id}, 'home', this.value)" class="w-10 bg-slate-900 border border-slate-700 focus:border-amber-500 text-center py-1.5 rounded-lg text-sm font-black text-amber-500 focus:outline-none disabled:opacity-50">
-                            <span class="text-slate-600 font-bold text-xs">X</span>
-                            <input type="number" min="0" ${terminado ? 'disabled' : ''} value="${apuestaExistente.away || ''}" oninput="registrarCambioTemporal(${partido.id}, 'away', this.value)" class="w-10 bg-slate-900 border border-slate-700 focus:border-amber-500 text-center py-1.5 rounded-lg text-sm font-black text-amber-500 focus:outline-none disabled:opacity-50">
-                        </div>
-                        <div class="flex flex-col items-center flex-1 space-y-1.5">
-                            ${obtenerHtmlBandera(nameAway)}
-                            <span class="text-xs font-bold text-slate-300 truncate w-24 text-center">${nameAway}</span>
-                        </div>
-                    </div>
-                `;
-                contenedor.appendChild(tarjeta);
+                        <span class="text-xs font-bold w-20 truncate text-right">${partido.awayTeam.name}</span>
+                    </div>`;
+                contenedor.appendChild(div);
             });
         }
 
-        window.onload = () => {
-            if (usuarioLogueado) {
-                pronosticosTemporales = JSON.parse(JSON.stringify(usuarioLogueado.pronosticos || {}));
-                cambiarVista('app');
-            } else {
-                cambiarVista('login');
-            }
-        };
+        async function renderizarRanking() {
+            const tbody = document.getElementById('tabla-ranking-cuerpo');
+            const res = await fetch(`${API_BASE_URL}/ranking`);
+            const data = await res.json();
+            tbody.innerHTML = data.sort((a,b) => b.puntos - a.puntos).map((u, i) => `
+                <tr class="border-b border-slate-700">
+                    <td class="py-3 px-4">${i+1}º</td>
+                    <td class="py-3 px-2">${u.nombre}</td>
+                    <td class="py-3 px-4 text-center font-black text-amber-500">${u.puntos} pts</td>
+                </tr>`).join('');
+        }
+        
+        function cambiarVista(vista) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('vista-' + vista).classList.remove('hidden');
+            if(vista === 'ranking') renderizarRanking();
+        }
     </script>
 </body>
 </html>
