@@ -120,41 +120,52 @@
         } catch(e) { cont.innerHTML = "Error al cargar partidos."; }
     }
 
-    function renderizarTarjetasPartidos(partidos) {
-        const cont = document.getElementById('contenedor-partidos');
-        cont.innerHTML = partidos.map(p => {
-            const esFinalizado = p.status === 'FINISHED';
-            const resReal = p.score_real || {home: null, away: null};
-            const apuesta = pronosticosTemporales[p.id] || {home: '', away: ''};
-            
-            return `
-                <div class="bg-slate-800 p-4 rounded-xl border ${esFinalizado ? 'border-emerald-500/50' : 'border-slate-700'} flex justify-between items-center">
-                    <span class="w-20 truncate text-xs"><span class="fi fi-${p.homeTeam.flag}"></span> ${p.homeTeam.name}</span>
-                    <div class="flex gap-2 items-center">
-                        <input type="number" ${esFinalizado ? 'disabled' : ''} 
-                            class="w-10 bg-slate-900 text-center rounded ${esFinalizado ? 'text-emerald-400' : ''}" 
-                            value="${esFinalizado ? (resReal.home ?? '-') : apuesta.home}" 
-                            oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
-                        <span class="text-slate-600 font-bold">X</span>
-                        <input type="number" ${esFinalizado ? 'disabled' : ''} 
-                            class="w-10 bg-slate-900 text-center rounded ${esFinalizado ? 'text-emerald-400' : ''}" 
-                            value="${esFinalizado ? (resReal.away ?? '-') : apuesta.away}" 
-                            oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
-                    </div>
-                    <span class="w-20 truncate text-xs text-right">${p.awayTeam.name} <span class="fi fi-${p.awayTeam.flag}"></span></span>
-                </div>`;
-        }).join('');
+   function renderizarTarjetasPartidos(partidos) {
+    const cont = document.getElementById('contenedor-partidos');
+    
+    // Verificación: si no hay partidos, mostramos mensaje amigable
+    if (!partidos || partidos.length === 0) {
+        cont.innerHTML = `
+            <div class="text-center py-16 px-6 bg-slate-800 rounded-2xl border border-slate-700">
+                <i class="fa-solid fa-calendar-times text-5xl text-slate-600 mb-4"></i>
+                <h3 class="text-lg font-bold text-slate-400">Jornada finalizada</h3>
+                <p class="text-sm text-slate-500 mt-2">Estamos esperando la programación de la siguiente fase. ¡Vuelve pronto!</p>
+            </div>`;
+        return;
     }
 
-    async function finalizarYGuardarJornadaServer() {
-        if(!usuarioLogueado) return;
-        const res = await fetch(`${API_BASE_URL}/guardar_quiniela`, {
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({username: usuarioLogueado.username, pronosticos: pronosticosTemporales})
-        });
-        if((await res.json()).success) alert("Guardado correctamente");
-    }
+    // Renderizado de partidos
+    cont.innerHTML = partidos.map(p => {
+        const esFinalizado = p.status === 'FINISHED';
+        const resReal = p.score_real || {home: null, away: null};
+        const apuesta = pronosticosTemporales[p.id] || {home: '', away: ''};
+        
+        return `
+            <div class="bg-slate-800 p-4 rounded-xl border ${esFinalizado ? 'border-emerald-500/50' : 'border-slate-700'} flex justify-between items-center shadow-sm">
+                <span class="w-20 truncate text-xs flex items-center gap-2">
+                    <span class="fi fi-${p.homeTeam.flag}"></span> ${p.homeTeam.name}
+                </span>
+                
+                <div class="flex gap-2 items-center">
+                    <input type="number" ${esFinalizado ? 'disabled' : ''} 
+                        class="w-10 bg-slate-900 text-center rounded border ${esFinalizado ? 'border-emerald-500/30 text-emerald-400' : 'border-slate-700'} focus:border-amber-500 outline-none" 
+                        value="${esFinalizado ? (resReal.home ?? '-') : apuesta.home}" 
+                        oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
+                    
+                    <span class="text-slate-600 font-bold text-xs">X</span>
+                    
+                    <input type="number" ${esFinalizado ? 'disabled' : ''} 
+                        class="w-10 bg-slate-900 text-center rounded border ${esFinalizado ? 'border-emerald-500/30 text-emerald-400' : 'border-slate-700'} focus:border-amber-500 outline-none" 
+                        value="${esFinalizado ? (resReal.away ?? '-') : apuesta.away}" 
+                        oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
+                </div>
+                
+                <span class="w-20 truncate text-xs text-right flex items-center justify-end gap-2">
+                    ${p.awayTeam.name} <span class="fi fi-${p.awayTeam.flag}"></span>
+                </span>
+            </div>`;
+    }).join('');
+} 
 
     async function procesarLogin(e) {
         e.preventDefault();
@@ -184,5 +195,14 @@
 
     window.onload = () => usuarioLogueado ? cambiarVista('app') : cambiarVista('login');
 </script>
+
+<footer class="bg-slate-950 text-center py-6 text-[10px] text-slate-600 border-t border-slate-900/60 mt-10">
+    <div class="space-y-1">
+        <p class="font-bold text-slate-500">QUINIELA MUNDIALISTA 2026</p>
+        <p>&copy; 2026 Diego Boscan Sideregts. Todos los derechos reservados.</p> 
+        <p class="text-slate-700">Versión 1.0.0 | Desarrollado y Programado by Diego Boscan Sideregts
+    </div>
+</footer>
+
 </body>
 </html>
