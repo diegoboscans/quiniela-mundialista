@@ -18,15 +18,66 @@ supabase = create_client(URL, KEY)
 API_TOKEN = 'f5ba1c141b2f495aa7eb896d7d2b4254' 
 
 MAPA_PAISES = {
-    "Argentina": "ar", "Brazil": "br", "Germany": "de", "France": "fr", 
-    "Spain": "es", "Mexico": "mx", "England": "gb", "Portugal": "pt",
-    "Italy": "it", "Netherlands": "nl", "Belgium": "be", "Uruguay": "uy",
-    "United States": "us", "USA": "us", "Canada": "ca", "Colombia": "co",
-    "Chile": "cl", "Japan": "jp", "South Korea": "kr", "Australia": "au",
-    "Morocco": "ma", "Croatia": "hr", "Switzerland": "ch", "Poland": "pl",
-    "Denmark": "dk", "Serbia": "rs", "Iran": "ir", "Saudi Arabia": "sa",
-    "Qatar": "qa", "Senegal": "sn", "Tunisia": "tn", "Cameroon": "cm",
-    "Ghana": "gh", "Ecuador": "ec", "Costa Rica": "cr", "Wales": "gb-wls"
+    # Norteamérica
+    "USA": "us", "United States": "us", "Estados Unidos": "us", "Estados Unidos National Team": "us",
+    "Mexico": "mx", "México": "mx", "Mexico National Team": "mx",
+    "Canada": "ca", "Canadá": "ca", "Canada National Team": "ca",
+    
+    # Sudamérica
+    "Argentina": "ar", "Argentina National Team": "ar",
+    "Brazil": "br", "Brasil": "br", "Brazil National Team": "br",
+    "Uruguay": "uy", "Uruguay National Team": "uy",
+    "Colombia": "co", "Colombia National Team": "co",
+    "Chile": "cl", "Chile National Team": "cl",
+    "Ecuador": "ec", "Ecuador National Team": "ec",
+    "Peru": "pe", "Perú": "pe", "Peru National Team": "pe",
+    "Paraguay": "py", "Paraguay National Team": "py",
+    "Venezuela": "ve", "Venezuela National Team": "ve",
+    "Bolivia": "bo", "Bolivia National Team": "bo",
+
+    # Europa
+    "Germany": "de", "Alemania": "de", "Germany National Team": "de",
+    "France": "fr", "Francia": "fr", "France National Team": "fr",
+    "Spain": "es", "España": "es", "Espanha": "es", "Spain National Team": "es",
+    "England": "gb", "Inglaterra": "gb", "England National Team": "gb",
+    "Italy": "it", "Italia": "it", "Italy National Team": "it",
+    "Portugal": "pt", "Portugal National Team": "pt",
+    "Netherlands": "nl", "Países Bajos": "nl", "Holanda": "nl", "Netherlands National Team": "nl",
+    "Belgium": "be", "Bélgica": "be", "Belgium National Team": "be",
+    "Croatia": "hr", "Croacia": "hr", "Croatia National Team": "hr",
+    "Switzerland": "ch", "Suiza": "ch", "Switzerland National Team": "ch",
+    "Poland": "pl", "Polonia": "pl", "Poland National Team": "pl",
+    "Denmark": "dk", "Dinamarca": "dk", "Denmark National Team": "dk",
+    "Serbia": "rs", "Serbia National Team": "rs",
+    "Austria": "at", "Austria National Team": "at",
+    "Sweden": "se", "Suecia": "se", "Sweden National Team": "se",
+    "Ukraine": "ua", "Ucrania": "ua", "Ukraine National Team": "ua",
+    "Czech Republic": "cz", "República Checa": "cz", "Czech Republic National Team": "cz",
+    "Norway": "no", "Noruega": "no", "Norway National Team": "no",
+    "Hungary": "hu", "Hungría": "hu", "Hungary National Team": "hu",
+    "Greece": "gr", "Grecia": "gr", "Greece National Team": "gr",
+    "Turkey": "tr", "Turquía": "tr", "Turkey National Team": "tr",
+    "Wales": "gb-wls", "Gales": "gb-wls", "Wales National Team": "gb-wls",
+
+    # África
+    "Morocco": "ma", "Marruecos": "ma", "Morocco National Team": "ma",
+    "Senegal": "sn", "Senegal National Team": "sn",
+    "Tunisia": "tn", "Túnez": "tn", "Tunisia National Team": "tn",
+    "Cameroon": "cm", "Camerún": "cm", "Cameroon National Team": "cm",
+    "Ghana": "gh", "Ghana National Team": "gh",
+    "Nigeria": "ng", "Nigeria National Team": "ng",
+    "Egypt": "eg", "Egipto": "eg", "Egypt National Team": "eg",
+    "Ivory Coast": "ci", "Costa de Marfil": "ci", "Ivory Coast National Team": "ci",
+    "Algeria": "dz", "Argelia": "dz", "Algeria National Team": "dz",
+
+    # Asia y Oceanía
+    "Japan": "jp", "Japón": "jp", "Japan National Team": "jp",
+    "South Korea": "kr", "Corea del Sur": "kr", "South Korea National Team": "kr",
+    "Australia": "au", "Australia National Team": "au",
+    "Saudi Arabia": "sa", "Arabia Saudita": "sa", "Saudi Arabia National Team": "sa",
+    "Iran": "ir", "Irán": "ir", "Iran National Team": "ir",
+    "Qatar": "qa", "Qatar National Team": "qa",
+    "New Zealand": "nz", "Nueva Zelanda": "nz", "New Zealand National Team": "nz"
 }
 
 def obtener_partidos_api():
@@ -52,22 +103,9 @@ def obtener_partidos_api():
 def endpoint_partidos():
     partidos = obtener_partidos_api()
     for p in partidos:
-        home_name = p["homeTeam"]["name"]
-        away_name = p["awayTeam"]["name"]
-        
-        # 1. Intentamos buscar en tu mapa
-        # 2. Si no está, intentamos limpiar el nombre (ej: "Real Madrid CF" -> "Real Madrid")
-        # 3. Ponemos "un" como última opción
-        p["homeTeam"]["flag"] = MAPA_PAISES.get(home_name, "un")
-        p["awayTeam"]["flag"] = MAPA_PAISES.get(away_name, "un")
-        
-        # Si sigue siendo "un", intenta buscar una coincidencia parcial
-        if p["homeTeam"]["flag"] == "un":
-            for nombre, codigo in MAPA_PAISES.items():
-                if nombre.lower() in home_name.lower():
-                    p["homeTeam"]["flag"] = codigo
-                    break
-                    
+        # Inyectar banderas y limpiar formato
+        p["homeTeam"]["flag"] = MAPA_PAISES.get(p["homeTeam"]["name"], "un")
+        p["awayTeam"]["flag"] = MAPA_PAISES.get(p["awayTeam"]["name"], "un")
         p["score_real"] = p.get("score", {}).get("fullTime", {"home": None, "away": None})
     return jsonify(partidos)
 
