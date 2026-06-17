@@ -14,12 +14,19 @@ URL = os.environ.get("SUPABASE_URL")
 KEY = os.environ.get("SUPABASE_KEY")
 supabase = create_client(URL, KEY)
 
-API_TOKEN = 'f5ba1c141b2f495aa7eb896d7d2b4254'
+# --- AGREGA ESTA LÍNEA DE NUEVO ---
+API_TOKEN = 'f5ba1c141b2f495aa7eb896d7d2b4254' 
+
 MAPA_PAISES = {
     "Argentina": "ar", "Brazil": "br", "Germany": "de", "France": "fr", 
     "Spain": "es", "Mexico": "mx", "England": "gb", "Portugal": "pt",
     "Italy": "it", "Netherlands": "nl", "Belgium": "be", "Uruguay": "uy",
-    "United States": "us", "Canada": "ca"
+    "United States": "us", "USA": "us", "Canada": "ca", "Colombia": "co",
+    "Chile": "cl", "Japan": "jp", "South Korea": "kr", "Australia": "au",
+    "Morocco": "ma", "Croatia": "hr", "Switzerland": "ch", "Poland": "pl",
+    "Denmark": "dk", "Serbia": "rs", "Iran": "ir", "Saudi Arabia": "sa",
+    "Qatar": "qa", "Senegal": "sn", "Tunisia": "tn", "Cameroon": "cm",
+    "Ghana": "gh", "Ecuador": "ec", "Costa Rica": "cr", "Wales": "gb-wls"
 }
 
 def obtener_partidos_api():
@@ -117,8 +124,18 @@ def guardar_quiniela():
 
 @app.route('/api/ranking', methods=['GET'])
 def obtener_ranking():
-    res = supabase.table("usuarios").select("username, puntos").order("puntos", desc=True).execute()
-    return jsonify(res.data)
+    # 1. Obtenemos a todos los usuarios de la base de datos
+    res = supabase.table("usuarios").select("*").execute()
+    usuarios = res.data
+    
+    # 2. Recalculamos los puntos de CADA usuario antes de mostrar el ranking
+    for u in usuarios:
+        if u.get('pronosticos'):
+            recalcular_y_guardar(u['username'], u['pronosticos'])
+    
+    # 3. Ahora que todos tienen sus puntos actualizados, pedimos el ranking ordenado
+    res_final = supabase.table("usuarios").select("username, puntos").order("puntos", desc=True).execute()
+    return jsonify(res_final.data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
