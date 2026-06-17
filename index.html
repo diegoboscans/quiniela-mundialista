@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiniela Mundialista</title>
+    <title>Quiniela Mundialista 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css"/>
@@ -25,202 +25,127 @@
                 <input type="password" id="login-password" required placeholder="Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
                 <button type="submit" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Ingresar</button>
             </form>
-            <div class="flex flex-col text-center space-y-2 text-xs">
-                <button onclick="cambiarVista('registro')" class="text-amber-500 underline">¿No tienes cuenta?</button>
-                <button onclick="cambiarVista('recuperar')" class="text-slate-400 underline">¿Olvidaste tu contraseña?</button>
-            </div>
-        </section>
-
-        <section id="vista-registro" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700">
-            <h2 class="text-2xl font-black text-amber-500 text-center">Crear Cuenta</h2>
-            <form onsubmit="procesarRegistro(event);" class="space-y-4">
-                <input type="text" id="reg-nombre" placeholder="Nombre" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
-                <input type="text" id="reg-username" placeholder="Usuario" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
-                <input type="password" id="reg-password" placeholder="Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
-                <button type="submit" class="w-full bg-emerald-500 text-white font-bold py-3 rounded-xl">Registrarse</button>
-            </form>
-            <button onclick="cambiarVista('login')" class="w-full text-xs text-amber-500 underline">Volver</button>
-        </section>
-
-        <section id="vista-recuperar" class="hidden space-y-6 bg-slate-800 p-6 rounded-2xl border border-slate-700">
-            <h2 class="text-2xl font-black text-amber-500 text-center">Recuperar Clave</h2>
-            <form onsubmit="procesarRecuperacionLocal(event);" class="space-y-4">
-                <input type="text" id="rec-username" required placeholder="Usuario" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
-                <input type="password" id="rec-password" required placeholder="Nueva Contraseña" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-3 px-4">
-                <button type="submit" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Actualizar</button>
-            </form>
-            <button onclick="cambiarVista('login')" class="w-full text-xs text-slate-400 underline">Volver al Login</button>
         </section>
 
         <section id="vista-pronosticos" class="hidden space-y-4">
-            <h2 class="font-bold text-lg text-amber-500">Partidos</h2>
-            <div id="contenedor-partidos" class="space-y-3"></div>
-            <button onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Guardar Quiniela</button>
+            <h2 class="font-bold text-lg text-amber-500">Próximos Partidos</h2>
+            <div id="contenedor-partidos" class="space-y-4"></div>
+            <button onclick="finalizarYGuardarJornadaServer()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">Guardar Cambios</button>
         </section>
 
         <section id="vista-ranking" class="hidden space-y-4">
-            <h2 class="font-bold text-lg text-amber-500">Ranking</h2>
+            <h2 class="font-bold text-lg text-amber-500">Ranking Global</h2>
             <div id="tabla-ranking-cuerpo" class="bg-slate-800 rounded-xl p-4 divide-y divide-slate-700"></div>
-            <button onclick="cambiarVista('app')" class="w-full bg-slate-700 py-2 rounded-xl">Volver</button>
         </section>
     </main>
 
- <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4 z-50">
-    <div class="max-w-md mx-auto flex justify-center gap-16 items-center">
-        <button onclick="cambiarVista('app')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
-            <i class="fa-solid fa-gamepad text-2xl"></i>
-            <span class="text-[10px] mt-1 font-semibold uppercase">Partidos</span>
-        </button>
-        
-        <button onclick="cambiarVista('ranking')" class="flex flex-col items-center text-slate-400 hover:text-amber-500 transition-colors">
-            <i class="fa-solid fa-ranking-star text-2xl"></i>
-            <span class="text-[10px] mt-1 font-semibold uppercase">Ranking</span>
-        </button>
-        
-        <button onclick="cerrarSesion()" class="flex flex-col items-center text-slate-400 hover:text-red-400 transition-colors">
-            <i class="fa-solid fa-right-from-bracket text-2xl"></i>
-            <span class="text-[10px] mt-1 font-semibold uppercase">Salir</span>
-        </button>
-    </div>
-</nav>
+    <nav id="barra-inferior" class="bg-slate-800 border-t border-slate-700 fixed bottom-0 left-0 right-0 p-4 z-50">
+        <div class="max-w-md mx-auto flex justify-around items-center">
+            <button onclick="cambiarVista('app')" class="text-slate-400 hover:text-amber-500 flex flex-col items-center"><i class="fa-solid fa-gamepad text-xl"></i><span class="text-[9px]">Partidos</span></button>
+            <button onclick="cambiarVista('ranking')" class="text-slate-400 hover:text-amber-500 flex flex-col items-center"><i class="fa-solid fa-ranking-star text-xl"></i><span class="text-[9px]">Ranking</span></button>
+            <button onclick="cerrarSesion()" class="text-slate-400 hover:text-red-400 flex flex-col items-center"><i class="fa-solid fa-right-from-bracket text-xl"></i><span class="text-[9px]">Salir</span></button>
+        </div>
+    </nav>
 
-   <script>
-    const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
-    let usuarioLogueado = JSON.parse(localStorage.getItem('quiniela_sesion_server')) || null;
-    let pronosticosTemporales = {};
+    <script>
+        const API_BASE_URL = 'https://quiniela-mundialista-d7b8.onrender.com/api';
+        let usuarioLogueado = JSON.parse(localStorage.getItem('quiniela_sesion_server')) || null;
+        let pronosticosTemporales = {};
 
-    function cambiarVista(vista) {
-        document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-        const bar = document.getElementById('barra-inferior');
-        if(vista === 'app') {
-            document.getElementById('vista-pronosticos').classList.remove('hidden');
-            bar.style.display = 'flex';
-            cargarPartidosReales();
-        } else if(vista === 'ranking') {
-            document.getElementById('vista-ranking').classList.remove('hidden');
-            bar.style.display = 'flex';
-            renderizarRanking();
-        } else {
-            document.getElementById('vista-' + vista).classList.remove('hidden');
-            bar.style.display = 'none';
-        }
-    }
-
-    function registrarCambioTemporal(pId, lado, val) {
-        if(!pronosticosTemporales[pId]) pronosticosTemporales[pId] = {home:'', away:''};
-        pronosticosTemporales[pId][lado] = val;
-    }
-
-    async function cargarPartidosReales() {
-        const cont = document.getElementById('contenedor-partidos');
-        try {
-            const res = await fetch(`${API_BASE_URL}/partidos`);
-            const partidos = await res.json();
-            renderizarTarjetasPartidos(partidos);
-        } catch(e) { cont.innerHTML = "Error al cargar partidos."; }
-    }
-
-    function renderizarTarjetasPartidos(partidos) {
-        const cont = document.getElementById('contenedor-partidos');
-        if (!partidos || partidos.length === 0) {
-            cont.innerHTML = `<div class="text-center py-10 text-slate-500">No hay partidos disponibles.</div>`;
-            return;
+        function cambiarVista(vista) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            const bar = document.getElementById('barra-inferior');
+            if(vista === 'app') {
+                document.getElementById('vista-pronosticos').classList.remove('hidden');
+                bar.style.display = 'block';
+                cargarPartidosReales();
+            } else if(vista === 'ranking') {
+                document.getElementById('vista-ranking').classList.remove('hidden');
+                bar.style.display = 'block';
+                renderizarRanking();
+            } else {
+                document.getElementById('vista-' + vista).classList.remove('hidden');
+                bar.style.display = 'none';
+            }
         }
 
-        cont.innerHTML = partidos.map(p => {
-            const esFinalizado = p.status === 'FINISHED';
-            const apuestaGuardada = usuarioLogueado?.pronosticos?.[p.id];
-            const estaBloqueado = esFinalizado || !!apuestaGuardada; 
-            
-            const resReal = p.score_real || {home: null, away: null};
-            const valorHome = esFinalizado ? (resReal.home ?? '-') : (apuestaGuardada?.home || pronosticosTemporales[p.id]?.home || '');
-            const valorAway = esFinalizado ? (resReal.away ?? '-') : (apuestaGuardada?.away || pronosticosTemporales[p.id]?.away || '');
-            
-            return `
-                <div class="bg-slate-800 p-4 rounded-xl border ${estaBloqueado ? 'border-amber-500/50' : 'border-slate-700'} flex justify-between items-center">
-                    <span class="w-20 truncate text-xs"><span class="fi fi-${p.homeTeam.flag || 'un'}"></span> ${p.homeTeam.name}</span>
-                    <div class="flex gap-2 items-center">
-                        <input type="number" ${estaBloqueado ? 'disabled' : ''} class="w-10 bg-slate-900 text-center rounded border ${estaBloqueado ? 'border-amber-500/30 text-amber-400' : 'border-slate-700'}" value="${valorHome}" oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
-                        <span class="text-slate-600 font-bold">X</span>
-                        <input type="number" ${estaBloqueado ? 'disabled' : ''} class="w-10 bg-slate-900 text-center rounded border ${estaBloqueado ? 'border-amber-500/30 text-amber-400' : 'border-slate-700'}" value="${valorAway}" oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
-                    </div>
-                    <span class="w-20 truncate text-xs text-right">${p.awayTeam.name} <span class="fi fi-${p.awayTeam.flag || 'un'}"></span></span>
-                </div>`;
-        }).join('');
-    }
+        function registrarCambioTemporal(pId, lado, val) {
+            if(!pronosticosTemporales[pId]) pronosticosTemporales[pId] = {home:'', away:''};
+            pronosticosTemporales[pId][lado] = val;
+        }
 
-    async function finalizarYGuardarJornadaServer() {
-        if (!usuarioLogueado) return;
-        if (Object.keys(pronosticosTemporales).length === 0) return alert("No hay cambios.");
+        async function cargarPartidosReales() {
+            const cont = document.getElementById('contenedor-partidos');
+            try {
+                const res = await fetch(`${API_BASE_URL}/partidos`);
+                const partidos = await res.json();
+                renderizarTarjetasPartidos(partidos);
+            } catch(e) { cont.innerHTML = "Error al conectar."; }
+        }
 
-        const btn = event.target;
-        btn.disabled = true;
-        btn.innerText = 'Guardando...';
+        function renderizarTarjetasPartidos(partidos) {
+            const cont = document.getElementById('contenedor-partidos');
+            cont.innerHTML = partidos.map(p => {
+                const esFinalizado = p.status === 'FINISHED';
+                const apuestaGuardada = usuarioLogueado?.pronosticos?.[p.id];
+                const resReal = p.score_real || {home: null, away: null};
+                
+                return `
+                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-300">
+                            <span class="w-20 truncate"><span class="fi fi-${p.homeTeam.flag || 'un'}"></span> ${p.homeTeam.name}</span>
+                            <span class="text-slate-500">VS</span>
+                            <span class="w-20 truncate text-right">${p.awayTeam.name} <span class="fi fi-${p.awayTeam.flag || 'un'}"></span></span>
+                        </div>
+                        ${esFinalizado ? `
+                        <div class="flex justify-center items-center gap-4 bg-slate-950 p-2 rounded-lg border border-amber-500/30">
+                            <span class="text-amber-500 font-black text-lg">${resReal.home ?? 0} - ${resReal.away ?? 0}</span>
+                            <span class="text-[9px] text-amber-500/60 font-bold">RESULTADO REAL</span>
+                        </div>` : ''}
+                        <div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700">
+                            <span class="text-[10px] text-slate-400 font-bold">TU PRONÓSTICO</span>
+                            <div class="flex gap-2 items-center">
+                                <input type="number" ${!!apuestaGuardada ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.home ?? (pronosticosTemporales[p.id]?.home || '')}" oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
+                                <span class="text-slate-600">X</span>
+                                <input type="number" ${!!apuestaGuardada ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.away ?? (pronosticosTemporales[p.id]?.away || '')}" oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
 
-        try {
+        async function finalizarYGuardarJornadaServer() {
+            if (!usuarioLogueado) return;
             const res = await fetch(`${API_BASE_URL}/guardar_quiniela`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: usuarioLogueado.username, pronosticos: pronosticosTemporales })
             });
             const data = await res.json();
             if (data.success) {
                 usuarioLogueado = data.user;
                 localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado));
-                pronosticosTemporales = {};
                 alert("¡Guardado!");
                 cargarPartidosReales();
             }
-        } catch(e) { alert("Error"); } finally { btn.disabled = false; btn.innerText = 'Guardar Quiniela'; }
-    }
+        }
 
-    async function procesarLogin(e) {
-        e.preventDefault();
-        const u = document.getElementById('login-username').value.toLowerCase();
-        const p = document.getElementById('login-password').value;
-        const res = await fetch(`${API_BASE_URL}/login`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u, password:p})});
-        const data = await res.json();
-        if(data.success) {
-            usuarioLogueado = data.user;
-            localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado));
-            cambiarVista('app');
-        } else alert("Credenciales incorrectas");
-    }
+        async function procesarLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value.toLowerCase();
+            const p = document.getElementById('login-password').value;
+            const res = await fetch(`${API_BASE_URL}/login`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:u, password:p})});
+            const data = await res.json();
+            if(data.success) { usuarioLogueado = data.user; localStorage.setItem('quiniela_sesion_server', JSON.stringify(usuarioLogueado)); cambiarVista('app'); }
+        }
 
-    async function procesarRegistro(e) {
-        e.preventDefault();
-        const res = await fetch(`${API_BASE_URL}/registro`, {
-            method:'POST', 
-            headers:{'Content-Type':'application/json'}, 
-            body:JSON.stringify({
-                nombre: document.getElementById('reg-nombre').value,
-                username: document.getElementById('reg-username').value,
-                password: document.getElementById('reg-password').value
-            })
-        });
-        const data = await res.json();
-        if(data.success) { alert("Registro exitoso, ahora inicia sesión"); cambiarVista('login'); }
-        else alert("Error: " + (data.error || ""));
-    }
+        async function renderizarRanking() {
+            const res = await fetch(`${API_BASE_URL}/ranking`);
+            const data = await res.json();
+            document.getElementById('tabla-ranking-cuerpo').innerHTML = data.map(u => `<div class="py-2 flex justify-between"><span>${u.username}</span><b>${u.puntos} pts</b></div>`).join('');
+        }
 
-    async function renderizarRanking() {
-        const res = await fetch(`${API_BASE_URL}/ranking`);
-        const data = await res.json();
-        document.getElementById('tabla-ranking-cuerpo').innerHTML = data.map(u => 
-            `<div class="py-2 flex justify-between"><span>${u.username}</span><b>${u.puntos} pts</b></div>`).join('');
-    }
-
-    function cerrarSesion() { localStorage.clear(); location.reload(); }
-    window.onload = () => usuarioLogueado ? cambiarVista('app') : cambiarVista('login');
-</script> 
-
-<footer class="bg-slate-950 text-center py-6 text-[10px] text-slate-600 border-t border-slate-900/60 mt-10">
-    <div class="space-y-1">
-        <p class="font-bold text-slate-500">QUINIELA MUNDIALISTA 2026</p>
-        <p>&copy; 2026 Diego Boscan Sideregts. Todos los derechos reservados.</p> 
-        <p class="text-slate-700">Versión 1.0.0 | Desarrollado y Programado by Diego Boscan Sideregts
-    </div>
-</footer>
-
+        function cerrarSesion() { localStorage.clear(); location.reload(); }
+        window.onload = () => usuarioLogueado ? cambiarVista('app') : cambiarVista('login');
+    </script>
 </body>
 </html>
