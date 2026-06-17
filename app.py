@@ -52,9 +52,22 @@ def obtener_partidos_api():
 def endpoint_partidos():
     partidos = obtener_partidos_api()
     for p in partidos:
-        # Inyectar banderas y limpiar formato
-        p["homeTeam"]["flag"] = MAPA_PAISES.get(p["homeTeam"]["name"], "un")
-        p["awayTeam"]["flag"] = MAPA_PAISES.get(p["awayTeam"]["name"], "un")
+        home_name = p["homeTeam"]["name"]
+        away_name = p["awayTeam"]["name"]
+        
+        # 1. Intentamos buscar en tu mapa
+        # 2. Si no está, intentamos limpiar el nombre (ej: "Real Madrid CF" -> "Real Madrid")
+        # 3. Ponemos "un" como última opción
+        p["homeTeam"]["flag"] = MAPA_PAISES.get(home_name, "un")
+        p["awayTeam"]["flag"] = MAPA_PAISES.get(away_name, "un")
+        
+        # Si sigue siendo "un", intenta buscar una coincidencia parcial
+        if p["homeTeam"]["flag"] == "un":
+            for nombre, codigo in MAPA_PAISES.items():
+                if nombre.lower() in home_name.lower():
+                    p["homeTeam"]["flag"] = codigo
+                    break
+                    
         p["score_real"] = p.get("score", {}).get("fullTime", {"home": None, "away": None})
     return jsonify(partidos)
 
