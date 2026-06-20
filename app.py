@@ -100,17 +100,23 @@ def endpoint_partidos():
 def recalcular_y_guardar(username, pronosticos_usuario):
     partidos = obtener_partidos_api()
     puntos = 0
-    # Lista de IDs de los 16 partidos que "hizo trampa"
-    partidos_trampa = ["ID1", "ID2", "ID3", "ID4", "ID5", "ID6", "ID7", "ID8", "ID9", "ID10", "ID11", "ID12", "ID13", "ID14", "ID15", "ID16"]
+    
+    # ID's de los partidos 1 al 16 que quieres ignorar
+    # Asegúrate de poner aquí los números de ID exactos de esos 16 partidos
+    PARTIDOS_A_IGNORAR = ["ID1", "ID2", "ID3", "ID4", "ID5", "ID6", "ID7", "ID8", "ID9", "ID10", "ID11", "ID12", "ID13", "ID14", "ID15", "ID16"]
     
     for partido in partidos:
         if partido.get("status") == "FINISHED":
             pid = str(partido["id"])
             
-            # SI ES CARLOS25, IGNORAMOS LOS PARTIDOS TRAMPA
-            if username == "carlos25" and pid in partidos_trampa:
-                continue
-                
+            # --- LÓGICA DE FILTRADO PARA CARLOS ---
+            if username == "carlos25":
+                # Si el partido está en la lista de los 16, saltamos al siguiente
+                if pid in PARTIDOS_A_IGNORAR:
+                    continue
+            # -------------------------------------
+            
+            # Si pasa el filtro, calculamos normalmente
             if pid in pronosticos_usuario:
                 real = partido["score"]["fullTime"]
                 pred = pronosticos_usuario[pid]
@@ -123,7 +129,6 @@ def recalcular_y_guardar(username, pronosticos_usuario):
                 except: continue
                 
     supabase.table("usuarios").update({"puntos": puntos}).eq("username", username).execute()
-@app.route('/api/registro', methods=['POST'])
 def registrar_usuario():
     datos = request.json
     try:
