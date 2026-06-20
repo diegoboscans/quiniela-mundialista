@@ -85,7 +85,6 @@
             else { document.getElementById('vista-' + vista).classList.remove('hidden'); bar.style.display = 'none'; }
         }
 
-        // --- FUNCIONES DE REGISTRO Y RECUPERACIÓN ---
         async function ejecutarRegistro(e) {
             e.preventDefault();
             const data = { nombre: document.getElementById('reg-nombre').value, username: document.getElementById('reg-usuario').value, password: document.getElementById('reg-password').value };
@@ -100,7 +99,6 @@
             if((await res.json()).success) { alert("¡Clave actualizada correctamente!"); cambiarVista('login'); }
         }
 
-        // --- LÓGICA ORIGINAL ---
         function registrarCambioTemporal(pId, lado, val) { if(!pronosticosTemporales[pId]) pronosticosTemporales[pId] = {home:'', away:''}; pronosticosTemporales[pId][lado] = val; }
         async function cargarPartidosReales() { const cont = document.getElementById('contenedor-partidos'); try { const res = await fetch(`${API_BASE_URL}/partidos`); const partidos = await res.json(); renderizarTarjetasPartidos(partidos); } catch(e) { cont.innerHTML = "Error al conectar."; } }
         
@@ -108,8 +106,10 @@
             const cont = document.getElementById('contenedor-partidos');
             cont.innerHTML = partidos.map(p => {
                 const esFinalizado = p.status === 'FINISHED';
+                const esEditable = p.status === 'TIMED'; 
                 const apuestaGuardada = usuarioLogueado?.pronosticos?.[p.id];
                 const resReal = p.score_real || {home: null, away: null};
+                
                 return `
                     <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-300">
@@ -121,9 +121,9 @@
                         <div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-700">
                             <span class="text-[10px] text-slate-400 font-bold">TU PRONÓSTICO</span>
                             <div class="flex gap-2 items-center">
-                                <input type="number" ${!!apuestaGuardada ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.home ?? (pronosticosTemporales[p.id]?.home || '')}" oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
+                                <input type="number" ${(!esEditable || !!apuestaGuardada) ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.home ?? (pronosticosTemporales[p.id]?.home || '')}" oninput="registrarCambioTemporal('${p.id}', 'home', this.value)">
                                 <span class="text-slate-600">X</span>
-                                <input type="number" ${!!apuestaGuardada ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.away ?? (pronosticosTemporales[p.id]?.away || '')}" oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
+                                <input type="number" ${(!esEditable || !!apuestaGuardada) ? 'disabled' : ''} class="w-12 bg-slate-800 text-center rounded border border-slate-600 text-white py-1" value="${apuestaGuardada?.away ?? (pronosticosTemporales[p.id]?.away || '')}" oninput="registrarCambioTemporal('${p.id}', 'away', this.value)">
                             </div>
                         </div>
                     </div>`;
