@@ -100,9 +100,17 @@ def endpoint_partidos():
 def recalcular_y_guardar(username, pronosticos_usuario):
     partidos = obtener_partidos_api()
     puntos = 0
+    # Lista de IDs de los 16 partidos que "hizo trampa"
+    partidos_trampa = ["ID1", "ID2", "ID3", "ID4", "ID5", "ID6", "ID7", "ID8", "ID9", "ID10", "ID11", "ID12", "ID13", "ID14", "ID15", "ID16"]
+    
     for partido in partidos:
         if partido.get("status") == "FINISHED":
             pid = str(partido["id"])
+            
+            # SI ES CARLOS25, IGNORAMOS LOS PARTIDOS TRAMPA
+            if username == "carlos25" and pid in partidos_trampa:
+                continue
+                
             if pid in pronosticos_usuario:
                 real = partido["score"]["fullTime"]
                 pred = pronosticos_usuario[pid]
@@ -113,8 +121,8 @@ def recalcular_y_guardar(username, pronosticos_usuario):
                         if ph == real_h and pa == real_a: puntos += 3
                         elif (real_h > real_a and ph > pa) or (real_a > real_h and pa > ph) or (real_h == real_a and ph == pa): puntos += 1
                 except: continue
+                
     supabase.table("usuarios").update({"puntos": puntos}).eq("username", username).execute()
-
 @app.route('/api/registro', methods=['POST'])
 def registrar_usuario():
     datos = request.json
